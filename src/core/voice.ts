@@ -1,8 +1,17 @@
 /**
  * Voice layer for EchoPay: browser text-to-speech (SpeechSynthesis) and
- * voice-command navigation (SpeechRecognition). Unlike the rest of core/,
- * this module is web-only - there is no cross-platform equivalent yet, and
- * command recognition today is reliably supported only in Chrome.
+ * voice-command navigation. Two recognition paths, chosen automatically by
+ * useVoice.ts:
+ *
+ *  - Native (this file's VoiceCommandListener): Chrome/Edge's built-in
+ *    SpeechRecognition. Fast, streaming, free - used wherever it exists.
+ *  - Universal fallback (core/voiceFallback.ts): an in-browser Whisper model
+ *    (via @xenova/transformers, WebAssembly) that only needs a microphone
+ *    and no browser-specific API, so it works in Firefox, Safari, and
+ *    anywhere else the native API doesn't exist. Loaded on demand.
+ *
+ * Every browser with a microphone gets a working voice command path either
+ * way - isSpeechRecognitionSupported() reflects that union, not just Chrome.
  */
 
 export type TabTarget = "home" | "dashboard" | "chat" | "transact" | "services";
@@ -62,8 +71,23 @@ function getSpeechRecognitionCtor(): SpeechRecognitionConstructor | null {
   return window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null;
 }
 
-export function isSpeechRecognitionSupported(): boolean {
+export function isNativeRecognitionSupported(): boolean {
   return getSpeechRecognitionCtor() !== null;
+}
+
+export function isMicCaptureSupported(): boolean {
+  return typeof navigator !== "undefined" && !!navigator.mediaDevices?.getUserMedia;
+}
+
+/** True wherever EITHER recognition path can work - native or the Whisper fallback. */
+export function isSpeechRecognitionSupported(): boolean {
+  return isNativeRecognitionSupported() || isMicCaptureSupported();
+}
+
+/** Shape shared by the native listener and the Whisper fallback listener. */
+export interface VoiceListener {
+  start(): void;
+  stop(): void;
 }
 
 export function speak(text: string, opts: { onEnd?: () => void; rate?: number } = {}): void {
@@ -87,7 +111,7 @@ export function stopSpeaking(): void {
  * behaves like a "press once, keep listening" mic rather than a one-shot.
  * Stops restarting once `stop()` is called or the mic permission is denied.
  */
-export class VoiceCommandListener {
+export class VoiceCommandListener implements VoiceListener {
   private recognition: SpeechRecognitionInstance | null = null;
   private wanted = false;
 
@@ -100,7 +124,9 @@ export class VoiceCommandListener {
   start(): void {
     const Ctor = getSpeechRecognitionCtor();
     if (!Ctor) {
-      this.onError?.("Voice commands need Chrome or another browser with speech recognition.");
+      // useVoice.ts only ever constructs this class when isNativeRecognitionSupported()
+      // is true, so this is a defensive fallback, not an expected path.
+      this.onError?.("Native voice recognition is unavailable in this browser.");
       return;
     }
     this.wanted = true;

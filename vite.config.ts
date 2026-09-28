@@ -2,14 +2,29 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
-// EchoPay ships as an installable PWA. No landing page: the app opens
-// straight to the Pulse home screen.
+// EchoPay ships as an installable PWA, fronted by a marketing landing page
+// (src/pages/LandingPage.tsx) that offers the web app or the Android APK.
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg"],
+      workbox: {
+        // The Whisper-in-a-worker voice fallback (only loaded by browsers
+        // without native SpeechRecognition) is a ~800kB onnxruntime-web
+        // chunk - exclude it from the PWA's up-front precache so Chrome/Edge
+        // installs never download it, and cache it on first actual use
+        // instead for the browsers that do need it.
+        globIgnores: ["**/whisperWorker-*.js", "**/voiceFallback-*.js"],
+        runtimeCaching: [
+          {
+            urlPattern: /whisperWorker-.*\.js$/,
+            handler: "CacheFirst",
+            options: { cacheName: "voice-fallback-worker" },
+          },
+        ],
+      },
       manifest: {
         name: "EchoPay",
         short_name: "EchoPay",

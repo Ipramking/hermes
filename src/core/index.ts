@@ -40,9 +40,12 @@ export {
   stopSpeaking,
   isSpeechSynthesisSupported,
   isSpeechRecognitionSupported,
+  isNativeRecognitionSupported,
+  isMicCaptureSupported,
   VoiceCommandListener,
   VOICE_HELP,
   type VoiceCommand,
+  type VoiceListener,
   type TabTarget,
   type DetailTarget,
 } from "./voice.js";
