@@ -1,5 +1,5 @@
-import { naira, type DeviationResult, type Transaction } from "../core/index.js";
-import { CheckOk, ClockIcon, LockIcon, ShieldCheck, Home } from "./Icons.js";
+import { naira, transactionReference, type DeviationResult, type Transaction } from "../core/index.js";
+import { CheckOk, ClockIcon, LockIcon, ShieldCheck, Home, ReceiptIcon } from "./Icons.js";
 
 export type ResultKind = "proceed" | "unsure" | "cancel";
 
@@ -8,11 +8,6 @@ export type ResultKind = "proceed" | "unsure" | "cancel";
  * own detailed result: what happened, the transaction facts, and the right
  * next step. This is what a judge sees after each demo choice.
  */
-function reference(txn: Transaction): string {
-  const n = [...txn.id].reduce((a, c) => a + c.charCodeAt(0), 0) * 977;
-  return "SEN-" + String(1000000 + (n % 8999999));
-}
-
 const nowStamp = () =>
   new Date().toLocaleString("en-NG", {
     day: "numeric",
@@ -41,15 +36,17 @@ export function SentryResult({
   result,
   onPrimary,
   onSecondary,
+  onViewReceipt,
 }: {
   kind: ResultKind;
   txn: Transaction;
   result: DeviationResult;
   onPrimary: () => void;
   onSecondary?: () => void;
+  onViewReceipt?: () => void;
 }) {
   const amount = naira(txn.amountKobo);
-  const ref = reference(txn);
+  const ref = transactionReference(txn.id);
   const stamp = nowStamp();
 
   const V: Record<ResultKind, Variant> = {
@@ -196,6 +193,11 @@ export function SentryResult({
 
         {/* actions */}
         <div className="mt-auto space-y-2.5 pt-7">
+          {kind === "proceed" && onViewReceipt && (
+            <button onClick={onViewReceipt} className="btn-ghost w-full gap-2 py-3.5 text-sm font-bold text-brand-red">
+              <ReceiptIcon size={16} weight="bold" /> View full receipt
+            </button>
+          )}
           <button onClick={onPrimary} className="btn-primary w-full py-3.5 text-sm">
             {kind === "proceed" && <Home size={16} weight="fill" />}
             {v.primary}

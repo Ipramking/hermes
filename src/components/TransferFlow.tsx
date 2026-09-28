@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { amara, naira, NAIRA, type Transaction } from "../core/index.js";
-import { Send, Shield, ChevronRight } from "./Icons.js";
+import { Send, Shield, ChevronRight, LockIcon } from "./Icons.js";
 
 /**
  * ClearUX transfer: three steps only (amount, recipient, confirm), down from
@@ -8,10 +8,19 @@ import { Send, Shield, ChevronRight } from "./Icons.js";
  * search. The confirm screen shows the live SentryAI status so the user knows
  * their behaviour is being watched before they submit.
  *
+ * Step 3 is real authorization, not decoration: the PIN is checked against
+ * DEMO_PIN and a wrong entry is rejected with a clear error, then a brief
+ * "Processing" state runs before the transaction is handed back to the shell.
+ * This is the baseline auth for every transfer; SentryAI + FaceScan is the
+ * escalated step for the minority that get flagged as unusual (see
+ * SentryInterrupt.tsx / FaceScan.tsx) - so low-risk sends stay low-friction.
+ *
  * The built transaction is handed back to the shell, which runs it through the
  * same SentryAI engine as everything else, so an unusual send here triggers the
  * real interrupt.
  */
+const DEMO_PIN = "1234";
+
 type Step = 1 | 2 | 3;
 
 interface Payee {
@@ -31,6 +40,8 @@ export function TransferFlow({
   const [payee, setPayee] = useState<Payee | null>(null);
   const [newAcct, setNewAcct] = useState("");
   const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const frequent = useMemo<Payee[]>(() => {
     const seen = new Map<string, string>();
@@ -52,23 +63,32 @@ export function TransferFlow({
 
   function submit() {
     if (!payee) return;
+    if (pin !== DEMO_PIN) {
+      setPinError(true);
+      setPin("");
+      return;
+    }
+    setPinError(false);
+    setSubmitting(true);
     const known = amara.transactions.find(
       (t) => t.counterpartyId === payee.id
     );
-    onSubmit({
-      id: `send-${Date.now()}`,
-      ts: new Date().toISOString(),
-      amountKobo,
-      direction: "out",
-      category: "transfer_out",
-      counterpartyId: payee.id,
-      counterpartyName: payee.name,
-      channel: "mobile",
-      // known payee => Amara's own device/location, so normal sends never flag;
-      // a new payee inherits an unfamiliar counterparty that SentryAI can catch.
-      deviceId: known?.deviceId ?? "device-amara-pixel",
-      location: "Lagos",
-    });
+    window.setTimeout(() => {
+      onSubmit({
+        id: `send-${Date.now()}`,
+        ts: new Date().toISOString(),
+        amountKobo,
+        direction: "out",
+        category: "transfer_out",
+        counterpartyId: payee.id,
+        counterpartyName: payee.name,
+        channel: "mobile",
+        // known payee => Amara's own device/location, so normal sends never flag;
+        // a new payee inherits an unfamiliar counterparty that SentryAI can catch.
+        deviceId: known?.deviceId ?? "device-amara-pixel",
+        location: "Lagos",
+      });
+    }, 900);
   }
 
   return (
@@ -177,14 +197,20 @@ export function TransferFlow({
               </span>
             </div>
 
-            <span className="label-micro mt-5 block">Enter your PIN</span>
-            <div className="mt-2 flex items-center gap-3">
+            <div className="mt-5 flex items-center gap-2">
+              <LockIcon size={14} className="text-ink-faint" />
+              <span className="label-micro">Authorize this transfer</span>
+            </div>
+            <p className="mt-1 text-xs text-ink-soft">
+              Enter your 4-digit PIN to confirm sending {naira(amountKobo)} to {payee.name}.
+            </p>
+            <div className="mt-3 flex items-center gap-3">
               <div className="flex gap-2">
                 {[0, 1, 2, 3].map((i) => (
                   <span
                     key={i}
-                    className={`h-3 w-3 rounded-full ${
-                      i < pin.length ? "bg-brand-glow" : "bg-hairline"
+                    className={`h-3 w-3 rounded-full transition-colors ${
+                      pinError ? "bg-danger" : i < pin.length ? "bg-brand-glow" : "bg-hairline"
                     }`}
                   />
                 ))}
@@ -193,13 +219,18 @@ export function TransferFlow({
                 autoFocus
                 inputMode="numeric"
                 value={pin}
-                onChange={(e) =>
-                  setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 4))
-                }
+                onChange={(e) => {
+                  setPinError(false);
+                  setPin(e.target.value.replace(/[^0-9]/g, "").slice(0, 4));
+                }}
+                disabled={submitting}
                 className="w-24 bg-transparent text-transparent caret-brand-glow outline-none"
                 aria-label="PIN"
               />
             </div>
+            {pinError && (
+              <p className="mt-2 text-xs font-semibold text-danger">Incorrect PIN. Try again.</p>
+            )}
           </div>
         )}
       </div>
@@ -229,11 +260,20 @@ export function TransferFlow({
         )}
         {step === 3 && (
           <button
-            disabled={pin.length < 4}
+            disabled={pin.length < 4 || submitting}
             onClick={submit}
-            className="btn-primary w-full py-4 text-base disabled:opacity-40"
+            className="btn-primary w-full py-4 text-base disabled:opacity-60"
           >
-            <Send size={18} /> Send {naira(amountKobo)}
+            {submitting ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                Processing
+              </>
+            ) : (
+              <>
+                <Send size={18} /> Send {naira(amountKobo)}
+              </>
+            )}
           </button>
         )}
       </div>

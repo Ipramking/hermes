@@ -61,3 +61,9 @@ export function daysBetween(a: string, b: string): number {
 export function clamp(v: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, v));
 }
+
+/** Deterministic, receipt-friendly reference ID derived from a transaction id. */
+export function transactionReference(txnId: string): string {
+  const n = [...txnId].reduce((a, c) => a + c.charCodeAt(0), 0) * 977;
+  return "ECP-" + String(1000000 + (n % 8999999));
+}

@@ -49,6 +49,8 @@ import {
   Microphone,
   MicrophoneSlash,
   SpeakerHigh,
+  ShareNetwork,
+  DownloadSimple,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -105,3 +107,6 @@ export const FingerprintIcon: Icon = Fingerprint;
 export const MicOn: Icon = Microphone;
 export const MicOff: Icon = MicrophoneSlash;
 export const SpeakerIcon: Icon = SpeakerHigh;
+export const ReceiptIcon: Icon = Receipt;
+export const ShareIcon: Icon = ShareNetwork;
+export const DownloadIcon: Icon = DownloadSimple;

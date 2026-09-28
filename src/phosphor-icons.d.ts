@@ -59,4 +59,6 @@ declare module "@phosphor-icons/react" {
   export const Microphone: Icon;
   export const MicrophoneSlash: Icon;
   export const SpeakerHigh: Icon;
+  export const ShareNetwork: Icon;
+  export const DownloadSimple: Icon;
 }

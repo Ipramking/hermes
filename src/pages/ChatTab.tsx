@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Send, Close, Spark } from "../components/Icons.js";
 import { HeaderMicButton } from "../components/HeaderMicButton.js";
 
@@ -35,6 +35,7 @@ export function ChatTab({
 }) {
   const [msgs, setMsgs] = useState<Msg[]>([GREETING]);
   const [draft, setDraft] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   function send(text: string) {
     if (!text.trim()) return;
@@ -49,84 +50,90 @@ export function ChatTab({
     setDraft("");
   }
 
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [msgs]);
+
   return (
-    <div className="flex min-h-full flex-col">
-      {/* Echo header */}
-      <div className="bg-brand-red px-5 pb-5 pt-safe">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-blush text-brand-red-deep">
-              <Spark size={20} weight="fill" />
-            </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base font-extrabold text-white">Echo</h1>
-                <span className="h-2 w-2 rounded-full bg-brand-blush" />
+    <div className="fixed inset-0 z-0">
+      <div className="mx-auto flex h-full w-full max-w-[430px] flex-col bg-bg pb-28">
+        {/* Echo header */}
+        <div className="shrink-0 bg-brand-red px-5 pb-5 pt-safe">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-blush text-brand-red-deep">
+                <Spark size={20} weight="fill" />
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-base font-extrabold text-white">Echo</h1>
+                  <span className="h-2 w-2 rounded-full bg-brand-blush" />
+                </div>
+                <p className="text-[11px] text-white/70">Your EchoPay virtual assistant</p>
               </div>
-              <p className="text-[11px] text-white/70">Your EchoPay virtual assistant</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {onMicToggle && (
+                <HeaderMicButton
+                  listening={!!micListening}
+                  supported={!!micSupported}
+                  onToggle={onMicToggle}
+                  tone="dark"
+                />
+              )}
+              <span className="rounded-full bg-white/12 px-2.5 py-1 text-[11px] font-semibold text-white">
+                English
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {onMicToggle && (
-              <HeaderMicButton
-                listening={!!micListening}
-                supported={!!micSupported}
-                onToggle={onMicToggle}
-                tone="dark"
-              />
-            )}
-            <span className="rounded-full bg-white/12 px-2.5 py-1 text-[11px] font-semibold text-white">
-              English
-            </span>
-          </div>
         </div>
-      </div>
 
-      {/* messages */}
-      <div className="min-h-[42vh] flex-1 space-y-3 px-5 py-5">
-        {msgs.map((m, i) => (
-          <div
-            key={i}
-            className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
-              m.from === "echo"
-                ? "rounded-tl-sm bg-surface text-ink shadow-card"
-                : "ml-auto rounded-tr-sm bg-brand-red text-white"
-            }`}
-          >
-            {m.text}
-          </div>
-        ))}
-      </div>
+        {/* messages - the only scrolling region */}
+        <div ref={scrollRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-5">
+          {msgs.map((m, i) => (
+            <div
+              key={i}
+              className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
+                m.from === "echo"
+                  ? "rounded-tl-sm bg-surface text-ink shadow-card"
+                  : "ml-auto rounded-tr-sm bg-brand-red text-white"
+              }`}
+            >
+              {m.text}
+            </div>
+          ))}
+        </div>
 
-      {/* suggestion chips */}
-      <div className="flex flex-wrap gap-2 px-5">
-        {CHIPS.map((c) => (
+        {/* suggestion chips */}
+        <div className="shrink-0 flex flex-wrap gap-2 px-5">
+          {CHIPS.map((c) => (
+            <button
+              key={c.label}
+              onClick={() => (c.to === "score" ? onGoScore() : c.to === "security" ? onGoSecurity() : onTransfer())}
+              className="rounded-full border border-brand-red/25 bg-brand-red/5 px-3 py-1.5 text-xs font-semibold text-brand-red"
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+
+        {/* input - pinned above the bottom nav via the outer pb-28 */}
+        <div className="shrink-0 mt-3 flex items-center gap-2 bg-bg px-5 pb-3 pt-2">
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && send(draft)}
+            placeholder="Type here to chat with me"
+            className="h-12 flex-1 rounded-full border border-hairline bg-surface px-4 text-sm text-ink outline-none placeholder:text-ink-faint focus:border-brand-red"
+          />
           <button
-            key={c.label}
-            onClick={() => (c.to === "score" ? onGoScore() : c.to === "security" ? onGoSecurity() : onTransfer())}
-            className="rounded-full border border-brand-red/25 bg-brand-red/5 px-3 py-1.5 text-xs font-semibold text-brand-red"
+            onClick={() => send(draft)}
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-red text-white"
+            aria-label="Send"
           >
-            {c.label}
+            {draft.trim() ? <Send size={18} weight="fill" /> : <Close size={16} className="rotate-45" />}
           </button>
-        ))}
-      </div>
-
-      {/* input */}
-      <div className="mt-4 mb-24 flex items-center gap-2 bg-bg px-5 pt-2">
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send(draft)}
-          placeholder="Type here to chat with me"
-          className="h-12 flex-1 rounded-full border border-hairline bg-surface px-4 text-sm text-ink outline-none placeholder:text-ink-faint focus:border-brand-red"
-        />
-        <button
-          onClick={() => send(draft)}
-          className="grid h-12 w-12 place-items-center rounded-full bg-brand-red text-white"
-          aria-label="Send"
-        >
-          {draft.trim() ? <Send size={18} weight="fill" /> : <Close size={16} className="rotate-45" />}
-        </button>
+        </div>
       </div>
     </div>
   );

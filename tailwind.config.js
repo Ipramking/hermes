@@ -26,6 +26,14 @@ export default {
         positive: "rgb(var(--positive) / <alpha-value>)",
         warn: "rgb(var(--warn) / <alpha-value>)",
         danger: "rgb(var(--danger) / <alpha-value>)",
+        overlay: {
+          bg: "rgb(var(--overlay-bg) / <alpha-value>)",
+          card: "rgb(var(--overlay-card) / <alpha-value>)",
+          "card-hi": "rgb(var(--overlay-card-hi) / <alpha-value>)",
+          hairline: "rgb(var(--overlay-hairline) / <alpha-value>)",
+          "ink-soft": "rgb(var(--overlay-ink-soft) / <alpha-value>)",
+          "ink-faint": "rgb(var(--overlay-ink-faint) / <alpha-value>)",
+        },
       },
       borderRadius: {
         card: "18px",

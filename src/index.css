@@ -31,6 +31,17 @@
   --warn: 176 120 20;
   --danger: 178 20 30;         /* darker than brand red so alerts still read as urgent */
 
+  /* Fixed dark palette for the SentryAI fraud-interrupt takeovers (SentryInterrupt,
+     FaceScan). These stay dark regardless of light/dark theme - deliberately, so
+     the "stop, this is different" moment reads the same either way - and are fully
+     opaque (no backdrop-blur) so nothing behind them ever reads as hazy. */
+  --overlay-bg: 18 10 10;      /* #120A0A near-black base */
+  --overlay-card: 36 20 20;    /* #241414 elevated card surface */
+  --overlay-card-hi: 46 26 26; /* slightly lighter, for the amount block */
+  --overlay-hairline: 72 44 44;
+  --overlay-ink-soft: 214 196 196;  /* body text, ~85% perceived white */
+  --overlay-ink-faint: 176 156 156; /* de-emphasized labels, still legible */
+
   color-scheme: light;
 }
 

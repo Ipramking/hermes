@@ -18,6 +18,11 @@ import { Alert, FaceScanIcon } from "./Icons.js";
  * they cannot fake the victim's face. Releasing a flagged transfer requires a
  * face scan (see FaceScan.tsx) - onVerify only opens that step, it never
  * releases funds by itself.
+ *
+ * Fully opaque, no backdrop-blur: this used to sit on bg-ink/95 + blur, which
+ * read as hazy/low-contrast. It now uses the fixed overlay-* palette (solid,
+ * theme-independent dark) with elevated cards instead of translucent washes,
+ * so text and the danger signal stay sharp regardless of device or theme.
  */
 export function SentryInterrupt({
   txn,
@@ -33,11 +38,11 @@ export function SentryInterrupt({
   onUnsure: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-[70] overflow-y-auto bg-ink/95 backdrop-blur-md">
+    <div className="fixed inset-0 z-[70] overflow-y-auto bg-overlay-bg">
       <div className="mx-auto flex min-h-full w-full max-w-[430px] flex-col px-6 pb-8 pt-10">
         {/* mark */}
         <div className="animate-pop flex flex-col items-center text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-danger/20">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-danger/25">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-danger text-white">
               <Alert size={22} weight="fill" />
             </span>
@@ -48,26 +53,26 @@ export function SentryInterrupt({
         </div>
 
         {/* headline */}
-        <h2 className="animate-rise mt-5 text-center text-xl font-bold leading-snug text-white">
+        <h2 className="animate-rise mt-5 text-center text-2xl font-extrabold leading-snug text-white">
           {result.headline}
         </h2>
 
-        {/* amount block */}
-        <div className="animate-rise mt-5 rounded-card border border-white/15 bg-white/5 p-4 text-center">
-          <p className="text-[11px] uppercase tracking-widest text-white/60">Transfer amount</p>
+        {/* amount block - accented card, distinct from the reasons list below */}
+        <div className="animate-rise mt-5 rounded-card border border-danger/40 bg-overlay-card-hi p-4 text-center">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-overlay-ink-faint">Transfer amount</p>
           <p className="tabular mt-1 text-3xl font-extrabold text-white">{naira(txn.amountKobo)}</p>
-          <p className="mt-1 text-sm text-white/70">to {txn.counterpartyName}</p>
+          <p className="mt-1 text-sm text-overlay-ink-soft">to {txn.counterpartyName}</p>
         </div>
 
         {/* why flagged */}
-        <div className="animate-rise mt-4 space-y-2">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-white/50">Why we stopped this</p>
+        <div className="animate-rise mt-5 space-y-2">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-overlay-ink-faint">Why we stopped this</p>
           {result.reasons.map((r) => (
-            <div key={r.key} className="flex items-start gap-3 rounded-ctrl border border-white/10 bg-white/5 px-4 py-2.5">
+            <div key={r.key} className="flex items-start gap-3 rounded-ctrl border border-overlay-hairline bg-overlay-card px-4 py-2.5">
               <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-danger" />
               <div>
-                <p className="text-sm font-semibold text-white">{r.label}</p>
-                <p className="text-xs text-white/70">{r.detail}</p>
+                <p className="text-sm font-bold text-white">{r.label}</p>
+                <p className="text-xs text-overlay-ink-soft">{r.detail}</p>
               </div>
             </div>
           ))}
@@ -82,14 +87,14 @@ export function SentryInterrupt({
             <FaceScanIcon size={18} weight="fill" />
             Verify with face scan
           </button>
-          <p className="mt-2 text-center text-[11px] leading-relaxed text-white/50">
+          <p className="mt-2 text-center text-[11px] leading-relaxed text-overlay-ink-faint">
             We confirm it's really you before releasing money. A tap alone isn't enough.
           </p>
 
           <div className="mt-3 space-y-2.5">
           <button
             onClick={onUnsure}
-            className="w-full rounded-ctrl border border-white/20 py-3.5 text-sm font-semibold text-white/75 transition active:scale-[0.98]"
+            className="w-full rounded-ctrl border border-overlay-hairline bg-overlay-card py-3.5 text-sm font-bold text-white transition active:scale-[0.98]"
           >
             I'm not sure, hold it
           </button>

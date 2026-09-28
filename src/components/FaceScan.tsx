@@ -16,6 +16,9 @@ const VERIFIED_HOLD_MS = 650;
  * Opportunistically shows the live front camera for realism when the
  * environment grants it; degrades to an animated viewfinder with no visible
  * error when it does not, so the flow never breaks the demo.
+ *
+ * Uses the same fixed overlay-* palette as SentryInterrupt: fully opaque, no
+ * backdrop-blur, elevated cards instead of translucent white washes.
  */
 export function FaceScan({
   txn,
@@ -70,15 +73,15 @@ export function FaceScan({
   const verified = stage === "verified";
 
   return (
-    <div className="fixed inset-0 z-[75] overflow-y-auto bg-ink/95 backdrop-blur-md">
+    <div className="fixed inset-0 z-[75] overflow-y-auto bg-overlay-bg">
       <div className="mx-auto flex min-h-full w-full max-w-[430px] flex-col px-6 pb-8 pt-10">
         <div className="flex items-center justify-between">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/60">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-overlay-ink-faint">
             SentryAI &middot; identity check
           </p>
           <button
             onClick={onCancel}
-            className="grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white/80"
+            className="grid h-8 w-8 place-items-center rounded-full border border-overlay-hairline bg-overlay-card text-white"
             aria-label="Cancel verification"
           >
             <Close size={14} />
@@ -86,9 +89,9 @@ export function FaceScan({
         </div>
 
         <div className="mt-2 text-center">
-          <p className="text-sm text-white/70">Confirming it's you before releasing</p>
+          <p className="text-sm text-overlay-ink-soft">Confirming it's you before releasing</p>
           <p className="tabular text-lg font-bold text-white">
-            {naira(txn.amountKobo)} <span className="font-normal text-white/60">to {txn.counterpartyName}</span>
+            {naira(txn.amountKobo)} <span className="font-normal text-overlay-ink-soft">to {txn.counterpartyName}</span>
           </p>
         </div>
 
@@ -105,11 +108,11 @@ export function FaceScan({
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeDasharray="18 10"
-              opacity="0.85"
+              opacity="0.9"
             />
           </svg>
 
-          <div className="absolute inset-[10px] overflow-hidden rounded-full border-2 border-white/15 bg-black/30">
+          <div className="absolute inset-[10px] overflow-hidden rounded-full border-2 border-overlay-hairline bg-overlay-card">
             {hasCamera ? (
               <video
                 ref={videoRef}
@@ -119,16 +122,16 @@ export function FaceScan({
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
-                <FaceScanIcon size={72} weight="light" className="text-white/50" />
+                <FaceScanIcon size={72} weight="light" className="text-overlay-ink-faint" />
               </div>
             )}
 
             {!verified && (
-              <div className="animate-scanline pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-transparent via-brand-glow/60 to-transparent" />
+              <div className="animate-scanline pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-transparent via-brand-glow/70 to-transparent" />
             )}
 
             {verified && (
-              <div className="animate-pop absolute inset-0 flex items-center justify-center bg-positive/25">
+              <div className="animate-pop absolute inset-0 flex items-center justify-center bg-positive/30">
                 <span className="grid h-16 w-16 place-items-center rounded-full bg-positive text-white">
                   <CheckOk size={32} weight="fill" />
                 </span>
@@ -140,7 +143,7 @@ export function FaceScan({
         <p className="animate-rise mt-8 text-center text-base font-bold text-white">
           {verified ? "Face verified" : "Hold still, scanning your face"}
         </p>
-        <p className="mt-1.5 text-center text-xs leading-relaxed text-white/60">
+        <p className="mt-1.5 text-center text-xs leading-relaxed text-overlay-ink-soft">
           {verified
             ? "Releasing your transfer now."
             : "This confirms the account owner is present. No one else can approve this transfer for you."}
@@ -148,7 +151,7 @@ export function FaceScan({
 
         <button
           onClick={onCancel}
-          className="mt-auto py-4 text-center text-sm font-semibold text-white/60"
+          className="mt-auto py-4 text-center text-sm font-bold text-overlay-ink-soft"
         >
           Cancel
         </button>

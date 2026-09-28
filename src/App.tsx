@@ -20,6 +20,7 @@ import { ComingSoon } from "./components/ComingSoon.js";
 import { SentryInterrupt } from "./components/SentryInterrupt.js";
 import { FaceScan } from "./components/FaceScan.js";
 import { SentryResult, type ResultKind } from "./components/SentryResult.js";
+import { TransactionReceipt } from "./components/TransactionReceipt.js";
 import { TransferFlow } from "./components/TransferFlow.js";
 import { HomeSkeleton } from "./components/Skeleton.js";
 import { HomeTab } from "./pages/HomeTab.js";
@@ -89,8 +90,9 @@ export default function App() {
   const [scanning, setScanning] = useState(
     () => typeof window !== "undefined" && new URLSearchParams(window.location.search).has("facescan")
   );
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ title: string; body?: string } | null>(null);
   const [log, setLog] = useState<SecurityEvent[]>(SEED_LOG);
+  const [receipt, setReceipt] = useState<{ txn: Transaction; verifiedBy: "PIN" | "Face scan" } | null>(null);
   const [outcome, setOutcome] = useState<{ kind: ResultKind; txn: Transaction; result: DeviationResult } | null>(() => {
     const r = new URLSearchParams(window.location.search).get("result");
     if (r === "proceed" || r === "unsure" || r === "cancel") {
@@ -111,8 +113,8 @@ export default function App() {
 
   const isAuthed = () => localStorage.getItem("echopay_authed") === "true";
 
-  function flash(msg: string) {
-    setToast(msg);
+  function flash(title: string, body?: string) {
+    setToast({ title, body });
     window.setTimeout(() => setToast(null), 2600);
   }
   function logEvent(e: Omit<SecurityEvent, "id" | "ts">) {
@@ -122,8 +124,9 @@ export default function App() {
     const result = evaluate(txn, fingerprint);
     if (result.flagged) setPending({ txn, result });
     else {
-      flash(`Sent ${naira(txn.amountKobo)} to ${txn.counterpartyName}`);
+      flash("Money sent successfully", `${naira(txn.amountKobo)} sent to ${txn.counterpartyName}.`);
       logEvent({ title: `Sent ${naira(txn.amountKobo)}`, detail: `To ${txn.counterpartyName}. Matched your usual pattern.`, status: "allowed" });
+      setReceipt({ txn, verifiedBy: "PIN" });
     }
   }
   function resolve(kind: ResultKind) {
@@ -389,14 +392,32 @@ export default function App() {
               closeOutcome();
             }
           }}
+          onViewReceipt={() => setReceipt({ txn: outcome.txn, verifiedBy: "Face scan" })}
+        />
+      )}
+
+      {receipt && (
+        <TransactionReceipt
+          txn={receipt.txn}
+          verifiedBy={receipt.verifiedBy}
+          onDone={() => {
+            setReceipt(null);
+            closeOutcome();
+          }}
+          onViewHistory={() => {
+            setReceipt(null);
+            setOutcome(null);
+            setDetail("security");
+          }}
         />
       )}
 
       {soon && <ComingSoon title={soon.title} Icon={soon.Icon} onClose={() => setSoon(null)} />}
 
       {toast && (
-        <div className="fixed inset-x-0 bottom-24 z-[55] mx-auto w-[92%] max-w-[400px] animate-pop rounded-ctrl bg-brand-red px-4 py-3 text-center text-sm font-semibold text-white shadow-card">
-          {toast}
+        <div className="fixed inset-x-0 bottom-24 z-[55] mx-auto w-[92%] max-w-[400px] animate-pop rounded-ctrl bg-brand-red px-4 py-3 text-center shadow-card">
+          <p className="text-sm font-bold text-white">{toast.title}</p>
+          {toast.body && <p className="mt-0.5 text-xs text-white/85">{toast.body}</p>}
         </div>
       )}
     </div>
