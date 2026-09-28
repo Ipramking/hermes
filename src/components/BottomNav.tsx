@@ -1,7 +1,7 @@
 import { Home, Dashboard, Chat, Transact, Services } from "./Icons.js";
 
 /**
- * EchoPay-style 5-tab bar: Home, Dashboard, Chat (elevated centre, the Echo
+ * Hermes-style 5-tab bar: Home, Dashboard, Chat (elevated centre, the Hermes
  * assistant), Transact, Services. Solid brand-red bar, active icon in cream,
  * the centre action raised on a cream disc.
  */
@@ -48,11 +48,11 @@ export function BottomNav({
         <div className="relative flex items-end justify-around rounded-t-[22px] bg-brand-red px-2 pb-1.5 pt-2 shadow-[0_-8px_24px_-16px_rgb(0_0_0/0.6)]">
           {SIDE.map((t) => item(t.key, t.label, t.Icon))}
 
-          {/* elevated centre: the Echo assistant */}
+          {/* elevated centre: the Hermes assistant */}
           <div className="flex min-w-[64px] flex-col items-center">
             <button
               onClick={() => onChange("chat")}
-              aria-label="Chat with Echo"
+              aria-label="Chat with Hermes"
               className="-mt-7 grid h-14 w-14 place-items-center rounded-full border-4 border-bg text-brand-red-deep transition-transform active:scale-95"
               style={{
                 background: "linear-gradient(135deg, rgb(var(--brand-cream-hi)), rgb(var(--brand-cream)))",

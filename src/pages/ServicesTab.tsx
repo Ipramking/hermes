@@ -5,7 +5,7 @@ import {
   ExchangeRates,
   CustomerService,
   RateUs,
-  EchoAssist,
+  HermesAssist,
   ChevronRight,
 } from "../components/Icons.js";
 
@@ -52,12 +52,12 @@ export function ServicesTab({
         <Row label="BehaviourScore" Icon={Gauge} accent onClick={onGoScore} />
       </div>
 
-      <h2 className="label-micro mb-2 mt-6 px-1">EchoPay services</h2>
+      <h2 className="label-micro mb-2 mt-6 px-1">Hermes services</h2>
       <div className="card divide-y divide-hairline/70 overflow-hidden">
         <Row label="Exchange Rates" Icon={ExchangeRates} onClick={() => onComingSoon("Exchange Rates", ExchangeRates)} />
         <Row label="Customer Service" Icon={CustomerService} onClick={() => onComingSoon("Customer Service", CustomerService)} />
         <Row label="Rate Us" Icon={RateUs} onClick={() => onComingSoon("Rate Us", RateUs)} />
-        <Row label="Echo Assist" Icon={EchoAssist} onClick={() => onComingSoon("Echo Assist", EchoAssist)} />
+        <Row label="Hermes Assist" Icon={HermesAssist} onClick={() => onComingSoon("Hermes Assist", HermesAssist)} />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 /**
- * Voice layer for EchoPay: browser text-to-speech (SpeechSynthesis) and
+ * Voice layer for Hermes: browser text-to-speech (SpeechSynthesis) and
  * voice-command navigation. Two recognition paths, chosen automatically by
  * useVoice.ts:
  *
@@ -31,18 +31,92 @@ type Rule = { phrases: string[]; command: VoiceCommand };
 const RULES: Rule[] = [
   { phrases: ["go home", "home screen", "take me home", "open home", "home"], command: { type: "nav", tab: "home" } },
   { phrases: ["dashboard", "open dashboard", "show dashboard", "spending"], command: { type: "nav", tab: "dashboard" } },
-  { phrases: ["talk to echo", "open echo", "open assistant", "open chat", "assistant", "chat"], command: { type: "nav", tab: "chat" } },
+  { phrases: ["talk to hermes", "open hermes", "open assistant", "open chat", "assistant", "chat"], command: { type: "nav", tab: "chat" } },
   { phrases: ["open transact", "transactions", "transact"], command: { type: "nav", tab: "transact" } },
   { phrases: ["open services", "show services", "services"], command: { type: "nav", tab: "services" } },
-  { phrases: ["send money", "new transfer", "start a transfer", "make a transfer", "transfer money"], command: { type: "transfer" } },
-  { phrases: ["my score", "behaviour score", "show my score", "open score", "credit score"], command: { type: "detail", detail: "score" } },
-  { phrases: ["open security", "show security", "protection", "security"], command: { type: "detail", detail: "security" } },
+  {
+    phrases: [
+      "i want to transfer",
+      "i want to send",
+      "send money",
+      "new transfer",
+      "start a transfer",
+      "make a transfer",
+      "transfer money",
+      "move money",
+      "pay someone",
+      "transfer",
+    ],
+    command: { type: "transfer" },
+  },
+  {
+    phrases: [
+      "how much do i have",
+      "how much money do i have",
+      "what's my balance",
+      "whats my balance",
+      "my balance",
+      "check my balance",
+      "my score",
+      "behaviour score",
+      "show my score",
+      "open score",
+      "credit score",
+      "how is my score",
+      "how's my score",
+    ],
+    command: { type: "detail", detail: "score" },
+  },
+  {
+    phrases: ["am i protected", "is my account safe", "open security", "show security", "protection", "security"],
+    command: { type: "detail", detail: "security" },
+  },
   { phrases: ["my profile", "open profile", "my account", "profile"], command: { type: "detail", detail: "profile" } },
   { phrases: ["go back", "close this", "dismiss", "back"], command: { type: "back" } },
   { phrases: ["what is on screen", "what's on screen", "describe screen", "read this screen", "read screen", "read this"], command: { type: "read" } },
   { phrases: ["stop listening", "cancel listening", "stop", "quiet"], command: { type: "stop" } },
-  { phrases: ["what can i say", "voice help", "commands", "help"], command: { type: "help" } },
+  {
+    phrases: [
+      "what do you do",
+      "what can you do",
+      "what can i say",
+      "what can i ask",
+      "who are you",
+      "what is this",
+      "what is hermes",
+      "voice help",
+      "commands",
+      "help",
+    ],
+    command: { type: "help" },
+  },
 ];
+
+const GREETINGS: { phrases: string[]; reply: string }[] = [
+  { phrases: ["thank you", "thanks", "cheers"], reply: "You're welcome!" },
+  { phrases: ["good morning", "good afternoon", "good evening"], reply: "Hello! What would you like to do?" },
+  { phrases: ["hello", "hi", "hey", "yo"], reply: "Hi! I can check your score, review security, or start a transfer - what do you need?" },
+  { phrases: ["how are you", "how're you"], reply: "Running smoothly, thanks for asking. What can I help you with?" },
+];
+
+/**
+ * Small talk that isn't really a command - greetings, thanks, etc. Checked
+ * before parseCommand() so "hi" doesn't get swallowed by some unrelated
+ * substring match.
+ */
+export function matchSmallTalk(rawText: string): string | null {
+  const t = rawText.trim().toLowerCase().replace(/[.,!?]/g, "");
+  if (!t) return null;
+  let best: { reply: string; len: number } | null = null;
+  for (const group of GREETINGS) {
+    for (const phrase of group.phrases) {
+      if (t === phrase || t.startsWith(phrase + " ") || t.endsWith(" " + phrase)) {
+        if (!best || phrase.length > best.len) best = { reply: group.reply, len: phrase.length };
+      }
+    }
+  }
+  return best?.reply ?? null;
+}
 
 /** Substring match against the transcript; longest phrase wins on overlap. */
 export function parseCommand(rawTranscript: string): VoiceCommand | null {
@@ -61,6 +135,9 @@ export function parseCommand(rawTranscript: string): VoiceCommand | null {
 
 export const VOICE_HELP =
   "You can say: go home, dashboard, chat, transact, services, my score, security, profile, send money, go back, read screen, or stop listening.";
+
+export const CHAT_HELP =
+  "I'm Hermes, your banking assistant. I can check your BehaviourScore, review your security activity, open your dashboard, transact, or services, start a transfer, or tell you what's on screen. Try asking me something like \"I want to transfer money\" or \"how's my score\".";
 
 export function isSpeechSynthesisSupported(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window;

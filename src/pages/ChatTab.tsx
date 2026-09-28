@@ -3,13 +3,13 @@ import { Send, Close, Spark } from "../components/Icons.js";
 import { HeaderMicButton } from "../components/HeaderMicButton.js";
 
 interface Msg {
-  from: "echo" | "user";
+  from: "hermes" | "user";
   text: string;
 }
 
 const GREETING: Msg = {
-  from: "echo",
-  text: "Hi, I'm Echo, your EchoPay assistant. Ask me about your score, your protection, or send money.",
+  from: "hermes",
+  text: "Hi, I'm Hermes. Ask me about your score or protection, or just tell me what you'd like to do - like \"I want to transfer money\" or \"what do you do\".",
 };
 
 const CHIPS = [
@@ -22,6 +22,7 @@ export function ChatTab({
   onGoScore,
   onGoSecurity,
   onTransfer,
+  onUserMessage,
   micListening,
   micSupported,
   onMicToggle,
@@ -29,6 +30,7 @@ export function ChatTab({
   onGoScore: () => void;
   onGoSecurity: () => void;
   onTransfer: () => void;
+  onUserMessage: (text: string) => string;
   micListening?: boolean;
   micSupported?: boolean;
   onMicToggle?: () => void;
@@ -39,14 +41,8 @@ export function ChatTab({
 
   function send(text: string) {
     if (!text.trim()) return;
-    setMsgs((m) => [
-      ...m,
-      { from: "user", text },
-      {
-        from: "echo",
-        text: "Full conversational banking is coming soon. For now, tap a suggestion below and I'll take you straight there.",
-      },
-    ]);
+    const reply = onUserMessage(text);
+    setMsgs((m) => [...m, { from: "user", text }, { from: "hermes", text: reply }]);
     setDraft("");
   }
 
@@ -57,7 +53,7 @@ export function ChatTab({
   return (
     <div className="fixed inset-0 z-0">
       <div className="mx-auto flex h-full w-full max-w-[430px] flex-col bg-bg pb-28">
-        {/* Echo header */}
+        {/* Hermes header */}
         <div className="shrink-0 bg-brand-red px-5 pb-5 pt-safe">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -66,10 +62,10 @@ export function ChatTab({
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-base font-extrabold text-white">Echo</h1>
+                  <h1 className="text-base font-extrabold text-white">Hermes</h1>
                   <span className="h-2 w-2 rounded-full bg-brand-blush" />
                 </div>
-                <p className="text-[11px] text-white/70">Your EchoPay virtual assistant</p>
+                <p className="text-[11px] text-white/70">Your Hermes virtual assistant</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -94,7 +90,7 @@ export function ChatTab({
             <div
               key={i}
               className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
-                m.from === "echo"
+                m.from === "hermes"
                   ? "rounded-tl-sm bg-surface text-ink shadow-card"
                   : "ml-auto rounded-tr-sm bg-brand-red text-white"
               }`}

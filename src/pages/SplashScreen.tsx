@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 /**
- * Boot splash. Full-bleed EchoPay red with the wordmark and a soft blush
+ * Boot splash. Full-bleed Hermes red with the wordmark and a soft blush
  * underline, then auto-advances to login.
  */
 export function SplashScreen({ onDone }: { onDone: () => void }) {
@@ -21,7 +21,7 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
     >
       <div className="animate-pop flex flex-col items-center">
         <span className="font-extrabold tracking-tight text-white" style={{ fontSize: 44 }}>
-          EchoPay
+          Hermes
         </span>
         <span className="mt-2 h-[4px] w-14 rounded-full bg-brand-blush" />
         <span className="mt-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/70">

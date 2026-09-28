@@ -1,5 +1,5 @@
 /**
- * EchoPay core types.
+ * Hermes core types.
  *
  * This module is framework-agnostic on purpose. Nothing in `core/` imports
  * React or touches the DOM. The PWA is the first consumer of this logic; the

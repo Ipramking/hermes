@@ -11,7 +11,7 @@ import {
   CheckOk,
 } from "../components/Icons.js";
 
-const APK_PATH = "/echopay.apk";
+const APK_PATH = "/hermes.apk";
 
 const FEATURES = [
   {
@@ -27,14 +27,14 @@ const FEATURES = [
   {
     Icon: MicOn,
     title: "Voice-first",
-    body: "Navigate the whole app, check your balance, or start a transfer, all by talking to Echo.",
+    body: "Navigate the whole app, check your balance, or start a transfer, all by talking to Hermes.",
   },
 ];
 
 const STEPS = [
   "Tap Download APK, or scan the QR code with your phone's camera.",
   "Open the downloaded file. Android may ask you to allow installs from this source - allow it once.",
-  "Open EchoPay and log in to start.",
+  "Open Hermes and log in to start.",
 ];
 
 /**
@@ -58,7 +58,7 @@ export function LandingPage({ onUseWebApp }: { onUseWebApp: () => void }) {
       {/* top bar */}
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <span className="text-xl font-extrabold tracking-tight text-ink">
-          Echo<span className="text-brand-red">Pay</span>
+          Hermes
         </span>
         <button onClick={onUseWebApp} className="btn-ghost px-4 py-2 text-sm">
           Use Web App
@@ -71,7 +71,7 @@ export function LandingPage({ onUseWebApp }: { onUseWebApp: () => void }) {
           Your Smarter Financial Experience
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
-          EchoPay pairs a real-time fraud interrupt and a behaviour-based credit score with
+          Hermes pairs a real-time fraud interrupt and a behaviour-based credit score with
           voice-first navigation - bank the way that makes sense for you, on the web or on your phone.
         </p>
         <div className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
@@ -93,7 +93,7 @@ export function LandingPage({ onUseWebApp }: { onUseWebApp: () => void }) {
             </span>
             <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-ink">Take it with you.</h2>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
-              Download the Android app for a faster, mobile-first experience - the same EchoPay,
+              Download the Android app for a faster, mobile-first experience - the same Hermes,
               installed on your phone.
             </p>
 
@@ -127,7 +127,7 @@ export function LandingPage({ onUseWebApp }: { onUseWebApp: () => void }) {
             </span>
             <div className="mt-4 grid h-[240px] w-[240px] place-items-center rounded-ctrl bg-overlay-bg/5">
               {qr ? (
-                <img src={qr} alt="QR code to download the EchoPay Android app" width={240} height={240} />
+                <img src={qr} alt="QR code to download the Hermes Android app" width={240} height={240} />
               ) : (
                 <div className="skeleton h-[240px] w-[240px] rounded-ctrl" />
               )}
@@ -164,9 +164,9 @@ export function LandingPage({ onUseWebApp }: { onUseWebApp: () => void }) {
             <CheckOk size={14} weight="fill" /> No account needed to preview
           </span>
           <button onClick={onUseWebApp} className="btn-primary gap-2 px-8 py-4 text-base">
-            <MonitorIcon size={18} weight="bold" /> Try EchoPay in your browser
+            <MonitorIcon size={18} weight="bold" /> Try Hermes in your browser
           </button>
-          <p className="mt-2 text-xs text-ink-faint">EchoPay &middot; a demo banking experience</p>
+          <p className="mt-2 text-xs text-ink-faint">Hermes &middot; a demo banking experience</p>
         </div>
       </section>
     </div>

@@ -1,4 +1,4 @@
-package com.echopay.app;
+package com.hermes.app;
 
 import com.getcapacitor.BridgeActivity;
 

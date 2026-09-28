@@ -117,7 +117,7 @@ export function SentryResult({
         items: [
           { title: "Your money is safe", body: "Nothing left your account. The transfer was stopped before it could complete." },
           { title: "Transfers are locked", body: "Outgoing transfers are paused until you verify your identity in the app." },
-          { title: "If this was not you", body: "Change your password and contact EchoPay support so we can secure your account." },
+          { title: "If this was not you", body: "Change your password and contact Hermes support so we can secure your account." },
         ],
       },
       primary: "Verify identity to unlock",

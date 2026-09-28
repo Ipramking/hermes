@@ -31,7 +31,7 @@ export function ComingSoon({
         </div>
         <h3 className="mt-4 text-xl font-extrabold text-ink">{title}</h3>
         <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-          This is part of the EchoPay experience. In this prototype we focused on
+          This is part of the Hermes experience. In this prototype we focused on
           the credit and protection layer, so {title} is shown as a preview.
         </p>
         <button onClick={onClose} className="btn-primary mt-6 w-full py-3.5 text-sm">

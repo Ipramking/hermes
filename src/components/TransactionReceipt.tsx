@@ -3,7 +3,7 @@ import { naira, transactionReference, type Transaction } from "../core/index.js"
 import { CheckOk, Home, ClockIcon, ShareIcon, DownloadIcon, ReceiptIcon } from "./Icons.js";
 
 const PAYMENT_METHOD = "Pulse account · •••• 4097";
-const FEE_KOBO = 0; // EchoPay-to-EchoPay transfers are fee-free
+const FEE_KOBO = 0; // Hermes-to-Hermes transfers are fee-free
 
 const stamp = (iso: string) =>
   new Date(iso).toLocaleString("en-NG", {
@@ -35,7 +35,7 @@ export function TransactionReceipt({
   const totalKobo = txn.amountKobo + FEE_KOBO;
 
   const summaryText = [
-    "EchoPay transaction receipt",
+    "Hermes transaction receipt",
     "Status: Successful",
     `Recipient: ${txn.counterpartyName}`,
     `Account/Phone: ${txn.counterpartyId.replace(/^new_/, "")}`,
@@ -50,7 +50,7 @@ export function TransactionReceipt({
   async function share() {
     if (navigator.share) {
       try {
-        await navigator.share({ title: "EchoPay receipt", text: summaryText });
+        await navigator.share({ title: "Hermes receipt", text: summaryText });
         return;
       } catch {
         /* user cancelled the share sheet - fall through to clipboard */
@@ -66,7 +66,7 @@ export function TransactionReceipt({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `EchoPay-Receipt-${ref}.txt`;
+    a.download = `Hermes-Receipt-${ref}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -117,7 +117,7 @@ export function TransactionReceipt({
         </div>
 
         <p className="mt-3 px-1 text-center text-[11px] leading-relaxed text-ink-faint">
-          Keep this reference for your records. EchoPay never asks for your PIN or password outside the app.
+          Keep this reference for your records. Hermes never asks for your PIN or password outside the app.
         </p>
 
         {/* receipt actions */}

@@ -9,7 +9,10 @@ import {
   computeBehaviourScore,
   evaluate,
   naira,
+  parseCommand,
+  matchSmallTalk,
   VOICE_HELP,
+  CHAT_HELP,
   type Transaction,
   type DeviationResult,
   type VoiceCommand,
@@ -116,7 +119,7 @@ export default function App() {
     return () => window.clearTimeout(t);
   }, []);
 
-  const isAuthed = () => localStorage.getItem("echopay_authed") === "true";
+  const isAuthed = () => localStorage.getItem("hermes_authed") === "true";
 
   function flash(title: string, body?: string) {
     setToast({ title, body });
@@ -171,11 +174,52 @@ export default function App() {
       case "transact":
         return "This is Transact. You can transfer money, pay bills, or buy airtime and data from here.";
       case "services":
-        return "This is Services, with your security, credit, and EchoPay service options.";
+        return "This is Services, with your security, credit, and Hermes service options.";
       case "chat":
-        return "This is your chat with Echo, your EchoPay assistant.";
+        return "This is your chat with Hermes, your Hermes assistant.";
       default:
-        return "You're in EchoPay.";
+        return "You're in Hermes.";
+    }
+  }
+
+  /**
+   * The one place a recognized intent turns into an actual app action. Shared
+   * by voice (which speaks the returned text) and typed chat (which shows it
+   * as a reply bubble) so "go home" and "I want to go home" do the same
+   * thing regardless of how they arrived.
+   */
+  function executeCommand(cmd: VoiceCommand): string {
+    switch (cmd.type) {
+      case "nav":
+        setDetail(null);
+        setTab(cmd.tab);
+        return `Opening ${TAB_LABEL[cmd.tab]}.`;
+      case "detail":
+        setDetail(cmd.detail);
+        return `Opening ${DETAIL_LABEL[cmd.detail]}.`;
+      case "transfer":
+        openTransfer();
+        return "Starting a transfer.";
+      case "back":
+        if (detail) {
+          setDetail(null);
+          return "Going back.";
+        }
+        if (transferOpen) {
+          setTransferOpen(false);
+          return "Closed.";
+        }
+        return "There's nothing to go back from.";
+      case "read":
+        return describeScreen();
+      case "stop":
+        if (voice.listening) {
+          voice.toggle();
+          return "Voice commands off.";
+        }
+        return "Voice commands aren't currently on.";
+      case "help":
+        return VOICE_HELP;
     }
   }
 
@@ -185,42 +229,17 @@ export default function App() {
       flash(`Heard: "${transcript}"`);
       return;
     }
-    switch (cmd.type) {
-      case "nav":
-        setDetail(null);
-        setTab(cmd.tab);
-        voice.speak(`Opening ${TAB_LABEL[cmd.tab]}`);
-        break;
-      case "detail":
-        setDetail(cmd.detail);
-        voice.speak(`Opening ${DETAIL_LABEL[cmd.detail]}`);
-        break;
-      case "transfer":
-        openTransfer();
-        voice.speak("Starting a transfer.");
-        break;
-      case "back":
-        if (detail) {
-          setDetail(null);
-          voice.speak("Going back.");
-        } else if (transferOpen) {
-          setTransferOpen(false);
-          voice.speak("Closed.");
-        } else {
-          voice.speak("There's nothing to go back from.");
-        }
-        break;
-      case "read":
-        voice.speak(describeScreen());
-        break;
-      case "stop":
-        voice.toggle();
-        voice.speak("Voice commands off.");
-        break;
-      case "help":
-        voice.speak(VOICE_HELP);
-        break;
-    }
+    voice.speak(executeCommand(cmd));
+  }
+
+  /** Same intent engine as voice, for typed chat messages. Returns Hermes's reply. */
+  function handleChatMessage(text: string): string {
+    const smallTalk = matchSmallTalk(text);
+    if (smallTalk) return smallTalk;
+    const cmd = parseCommand(text);
+    if (cmd?.type === "help") return CHAT_HELP;
+    if (cmd) return executeCommand(cmd);
+    return "I'm still learning that one. I can check your score, review security, open your dashboard or services, or start a transfer - try asking me directly, like \"I want to transfer money\".";
   }
 
   const voice = useVoice(handleVoiceCommand);
@@ -251,7 +270,7 @@ export default function App() {
       <div className="ambient mx-auto min-h-full w-full max-w-[430px]">
         <LoginScreen
           onLogin={() => {
-            localStorage.setItem("echopay_authed", "true");
+            localStorage.setItem("hermes_authed", "true");
             setPhase("app");
           }}
         />
@@ -335,6 +354,7 @@ export default function App() {
                 onGoScore={() => setDetail("score")}
                 onGoSecurity={() => setDetail("security")}
                 onTransfer={openTransfer}
+                onUserMessage={handleChatMessage}
                 {...micProps}
               />
             )}

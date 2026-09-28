@@ -1,5 +1,5 @@
 /**
- * Icon set for EchoPay. One family - Phosphor - re-exported under
+ * Icon set for Hermes. One family - Phosphor - re-exported under
  * app-semantic names so the rest of the app never imports icon internals.
  * To change the icon family, only this file changes.
  */
@@ -75,7 +75,7 @@ export const BuyData: Icon = WifiHigh;
 export const ExchangeRates: Icon = BookOpen;
 export const CustomerService: Icon = Headset;
 export const RateUs: Icon = Star;
-export const EchoAssist: Icon = ChatText;
+export const HermesAssist: Icon = ChatText;
 
 // general
 export const Send: Icon = PaperPlaneTilt;

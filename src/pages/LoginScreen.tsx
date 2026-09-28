@@ -29,7 +29,7 @@ export function LoginScreen({ onLogin }: { onLogin: () => void }) {
       >
         <div className="pt-6 leading-none">
           <span className="font-extrabold tracking-tight text-white" style={{ fontSize: 30 }}>
-            EchoPay
+            Hermes
           </span>
           <span className="mt-2 block h-[4px] w-12 rounded-full bg-brand-blush" />
           <span className="mt-2 block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">

@@ -1,5 +1,5 @@
 /**
- * Public surface of the EchoPay engine.
+ * Public surface of the Hermes engine.
  *
  * This barrel IS the SDK contract. The PWA imports from here today; the Android
  * SDK will wrap this exact surface tomorrow. Keep it stable and framework-free.
@@ -36,6 +36,7 @@ export {
 } from "./dataset.js";
 export {
   parseCommand,
+  matchSmallTalk,
   speak,
   stopSpeaking,
   isSpeechSynthesisSupported,
@@ -44,6 +45,7 @@ export {
   isMicCaptureSupported,
   VoiceCommandListener,
   VOICE_HELP,
+  CHAT_HELP,
   type VoiceCommand,
   type VoiceListener,
   type TabTarget,

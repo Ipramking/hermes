@@ -4,10 +4,10 @@ import { Notif, ShieldCheck } from "./Icons.js";
 import { HeaderMicButton } from "./HeaderMicButton.js";
 
 /**
- * The EchoPay shell chrome: a brand-red header (wordmark, protection status,
+ * The Hermes shell chrome: a brand-red header (wordmark, protection status,
  * voice control, notifications, profile) with a white content sheet curving
  * up over it and a centred greeting. Every main tab renders inside this so
- * the whole app reads as one EchoPay product.
+ * the whole app reads as one Hermes product.
  */
 export function TabScaffold({
   children,
@@ -36,7 +36,7 @@ export function TabScaffold({
         <div className="flex items-center justify-between">
           <div className="leading-none">
             <span className="font-extrabold tracking-tight text-white" style={{ fontSize: 22 }}>
-              EchoPay
+              Hermes
             </span>
             <span className="mt-1 block h-[3px] w-9 rounded-full bg-brand-blush" />
             <span className="mt-1 block text-[9px] font-medium tracking-[0.18em] text-white/70">

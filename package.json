@@ -1,9 +1,9 @@
 {
-  "name": "echo-pay",
+  "name": "hermes",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "EchoPay - a voice-first, intelligent Pulse banking layer.",
+  "description": "Hermes - a voice-first, intelligent Pulse banking layer.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

@@ -38,4 +38,10 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Needed for the voice-command mic (getUserMedia / SpeechRecognition in the
+         WebView). Capacitor's own BridgeWebChromeClient already requests this at
+         runtime and grants the WebView's permission request once approved - it
+         just needs to be declared here for Android to allow requesting it at all. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 </manifest>

@@ -1,7 +1,7 @@
 /** Theme control: light / dark / system, persisted to localStorage. */
 export type Theme = "light" | "dark" | "system";
 
-const KEY = "echopay_theme";
+const KEY = "hermes_theme";
 
 export function getTheme(): Theme {
   const t = localStorage.getItem(KEY);

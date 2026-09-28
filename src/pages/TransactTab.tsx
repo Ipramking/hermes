@@ -15,7 +15,7 @@ const ROWS: {
   Icon: Icon;
   action: "transfer" | "soon";
 }[] = [
-  { label: "Transfer Now", sub: "To any EchoPay user or Nigerian bank", Icon: TransferNow, action: "transfer" },
+  { label: "Transfer Now", sub: "To any Hermes user or Nigerian bank", Icon: TransferNow, action: "transfer" },
   { label: "Xpress Cash", sub: "Send cash to collect at any branch", Icon: XpressCash, action: "soon" },
   { label: "Pay a Bill", sub: "Electricity, TV, and more", Icon: PayBill, action: "soon" },
   { label: "Buy Airtime", sub: "Top up any network", Icon: Airtime, action: "soon" },
