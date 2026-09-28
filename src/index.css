@@ -1,0 +1,181 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * EchoPay design system.
+ * White + red, unapologetically. Red is the primary anchor (60-70%), white
+ * and off-white surfaces carry the rest, with a warm cream reserved for
+ * occasional campaign moments. Light is default; dark is a first-class
+ * option. Every value is a token so the whole app re-skins from this block.
+ */
+:root {
+  --brand-red: 211 30 42;        /* #D31E2A primary anchor (60-70%) */
+  --brand-red-deep: 138 15 26;   /* #8A0F1A footers, active states, dark cards */
+  --brand-red-bright: 235 61 74; /* #EB3D4A gradient energy */
+  --brand-cream: 214 168 79;      /* #D6A84F occasional campaign accent */
+  --brand-cream-hi: 232 195 128;  /* lighter cream for the metallic chip */
+  --brand-blush: 247 205 205;    /* #F7CDCD soft accent - lines/fills-with-dark-text only */
+  --brand-accent: 247 205 205;   /* alias -> blush (ring arc, accent lines) */
+  --brand-glow: 211 30 42;       /* interactive accent = red on light */
+
+  --bg: 250 248 248;           /* #FAF8F8 warm white */
+  --surface: 255 255 255;
+  --surface2: 244 236 236;     /* #F4ECEC light card fill */
+  --hairline: 232 219 219;
+  --ink: 34 24 24;             /* #221818 near-black, warm cast */
+  --ink-soft: 100 82 82;
+  --ink-faint: 150 130 130;
+
+  --positive: 46 139 87;       /* readable green for money, kept distinct from brand red */
+  --warn: 176 120 20;
+  --danger: 178 20 30;         /* darker than brand red so alerts still read as urgent */
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --brand-glow: 240 90 100;    /* brighter red reads on near-black */
+    --bg: 22 12 13;             /* #160C0D near-black, red cast */
+    --surface: 40 19 21;
+    --surface2: 51 24 27;
+    --hairline: 74 35 38;
+    --ink: 246 238 238;
+    --ink-soft: 206 180 180;
+    --ink-faint: 160 134 134;
+    --positive: 120 196 140;
+    --warn: 226 176 74;
+    --danger: 235 90 90;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --brand-glow: 240 90 100;
+  --bg: 22 12 13;
+  --surface: 40 19 21;
+  --surface2: 51 24 27;
+  --hairline: 74 35 38;
+  --ink: 246 238 238;
+  --ink-soft: 206 180 180;
+  --ink-faint: 160 134 134;
+  --positive: 120 196 140;
+  --warn: 226 176 74;
+  --danger: 235 90 90;
+  color-scheme: dark;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-width: none;
+}
+::-webkit-scrollbar { width: 0; height: 0; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+@layer components {
+  .card {
+    @apply rounded-card border border-hairline bg-surface shadow-card;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-ctrl bg-brand-red font-semibold text-white transition-transform duration-150 active:scale-[0.97];
+    box-shadow: 0 10px 24px -12px rgb(var(--brand-red) / 0.8);
+  }
+  .btn-cream {
+    @apply inline-flex items-center justify-center gap-2 rounded-ctrl font-bold text-brand-red-deep transition-transform duration-150 active:scale-[0.97];
+    background: linear-gradient(135deg, rgb(var(--brand-cream-hi)), rgb(var(--brand-cream)));
+    box-shadow: 0 10px 24px -12px rgb(var(--brand-cream) / 0.9);
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-ctrl border border-hairline bg-surface text-ink-soft transition-transform duration-150 active:scale-[0.97];
+  }
+  .label-micro {
+    @apply text-[11px] font-bold uppercase tracking-[0.14em] text-ink-faint;
+  }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Premium hero card: deep red into brand red, with a warm cream horizon. */
+  .brand-card {
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgb(var(--brand-blush) / 0.22) 0%, transparent 48%),
+      linear-gradient(150deg, rgb(var(--brand-red-deep)) 0%, rgb(var(--brand-red)) 58%, rgb(var(--brand-red-bright)) 120%);
+  }
+  .shadow-card {
+    box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.5) inset, 0 10px 30px -20px rgb(var(--brand-red) / 0.55);
+  }
+  :root[data-theme="dark"] .shadow-card,
+  :root:not([data-theme="light"]) .shadow-card {
+    box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 16px 40px -24px rgb(0 0 0 / 0.9);
+  }
+
+  /* Frosted glass, used on floating nav. Solid fallback for reduced-transparency. */
+  .glass {
+    background: rgb(var(--surface) / 0.72);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass { background: rgb(var(--surface)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  }
+}
+
+@layer utilities {
+  .ambient {
+    background:
+      radial-gradient(70% 40% at 50% -8%, rgb(var(--brand-red) / 0.14) 0%, transparent 68%),
+      radial-gradient(50% 26% at 100% 4%, rgb(var(--brand-cream) / 0.10) 0%, transparent 60%);
+  }
+  .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem); }
+  .pt-safe { padding-top: calc(env(safe-area-inset-top, 0px) + 1.5rem); }
+  .text-gradient-cream {
+    background: linear-gradient(120deg, rgb(var(--brand-cream-hi)), rgb(var(--brand-cream)));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+}
+
+/* motion */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop  { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+.animate-rise { animation: rise 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-pop  { animation: pop 0.28s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-spin-slow { animation: spin-slow 2.4s linear infinite; }
+.animate-scanline { animation: scanline 1.6s ease-in-out infinite; }
+
+/* stagger helpers for entrance choreography */
+.stagger > * { animation: rise 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+.stagger > *:nth-child(1){animation-delay:.02s}
+.stagger > *:nth-child(2){animation-delay:.07s}
+.stagger > *:nth-child(3){animation-delay:.12s}
+.stagger > *:nth-child(4){animation-delay:.17s}
+.stagger > *:nth-child(5){animation-delay:.22s}
+.stagger > *:nth-child(6){animation-delay:.27s}
+.stagger > *:nth-child(7){animation-delay:.32s}
+
+.skeleton {
+  position: relative; overflow: hidden;
+  background: rgb(var(--surface2));
+}
+.skeleton::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(var(--ink) / 0.06), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise, .animate-pop, .animate-ping, .stagger > *,
+  .skeleton::after, [class*="animate-"] { animation: none !important; }
+  .stagger > * { opacity: 1 !important; transform: none !important; }
+}
