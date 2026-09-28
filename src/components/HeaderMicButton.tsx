@@ -24,7 +24,7 @@ export function HeaderMicButton({
       onClick={onToggle}
       aria-label={listening ? "Stop voice commands" : supported ? "Start voice commands" : "Voice commands unavailable in this browser"}
       aria-pressed={listening}
-      className={`relative grid h-9 w-9 shrink-0 place-items-center rounded-full transition active:scale-95 ${
+      className={`relative grid h-11 w-11 shrink-0 place-items-center rounded-full transition active:scale-95 ${
         listening
           ? "bg-brand-red text-white"
           : dark

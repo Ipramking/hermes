@@ -25,7 +25,7 @@ export function ComingSoon({
           <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-red/10 text-brand-red">
             <Glyph size={24} weight="bold" />
           </span>
-          <button onClick={onClose} className="grid h-9 w-9 place-items-center rounded-full bg-surface2 text-ink-soft" aria-label="Close">
+          <button onClick={onClose} className="grid h-11 w-11 place-items-center rounded-full bg-surface2 text-ink-soft" aria-label="Close">
             <Close size={16} />
           </button>
         </div>

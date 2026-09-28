@@ -81,7 +81,7 @@ export function FaceScan({
           </p>
           <button
             onClick={onCancel}
-            className="grid h-8 w-8 place-items-center rounded-full border border-overlay-hairline bg-overlay-card text-white"
+            className="grid h-11 w-11 place-items-center rounded-full border border-overlay-hairline bg-overlay-card text-white"
             aria-label="Cancel verification"
           >
             <Close size={14} />

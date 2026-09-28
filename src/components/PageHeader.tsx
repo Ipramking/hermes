@@ -18,7 +18,7 @@ export function PageHeader({
       {onBack && (
         <button
           onClick={onBack}
-          className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-hairline bg-surface text-ink-soft"
+          className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-hairline bg-surface text-ink-soft"
           aria-label="Back"
         >
           <ChevronRight size={18} className="rotate-180" />

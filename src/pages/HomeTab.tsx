@@ -81,7 +81,7 @@ export function HomeTab({
             </div>
             <button
               onClick={() => setHidden((v) => !v)}
-              className="grid h-9 w-9 place-items-center rounded-full bg-white/15 text-white"
+              className="grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white"
               aria-label={hidden ? "Show balance" : "Hide balance"}
             >
               {hidden ? <EyeOff size={16} /> : <Eye size={16} />}

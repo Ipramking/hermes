@@ -59,15 +59,15 @@ export function TabScaffold({
             )}
             <button
               onClick={onNotifications}
-              className="relative grid h-9 w-9 place-items-center rounded-full bg-white/12 text-white"
+              className="relative grid h-11 w-11 place-items-center rounded-full bg-white/12 text-white"
               aria-label="Notifications"
             >
               <Notif size={17} />
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-brand-blush" />
+              <span className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full bg-brand-blush" />
             </button>
             <button
               onClick={onProfile}
-              className="grid h-9 w-9 place-items-center rounded-full bg-white text-xs font-extrabold text-brand-red ring-2 ring-brand-blush/70"
+              className="grid h-11 w-11 place-items-center rounded-full bg-white text-xs font-extrabold text-brand-red ring-2 ring-brand-blush/70"
               aria-label="Profile"
             >
               {first[0]}
