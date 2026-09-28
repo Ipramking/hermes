@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import type { Icon } from "@phosphor-icons/react";
 import {
   amara,
@@ -33,6 +34,7 @@ import { SecurityTab, type SecurityEvent } from "./pages/SecurityTab.js";
 import { ProfileTab } from "./pages/ProfileTab.js";
 import { SplashScreen } from "./pages/SplashScreen.js";
 import { LoginScreen } from "./pages/LoginScreen.js";
+import { LandingPage } from "./pages/LandingPage.js";
 import { Notif as BottomNavBell } from "./components/Icons.js";
 
 type Detail = null | "score" | "security" | "profile";
@@ -101,9 +103,12 @@ export default function App() {
     return null;
   });
   const [loaded, setLoaded] = useState(false);
-  const [phase, setPhase] = useState<"splash" | "login" | "app">(() => {
+  const [phase, setPhase] = useState<"landing" | "splash" | "login" | "app">(() => {
     const s = new URLSearchParams(window.location.search).get("screen");
-    return s === "login" || s === "app" || s === "splash" ? s : "splash";
+    if (s === "login" || s === "app" || s === "splash" || s === "landing") return s;
+    // The packaged Android app IS the "get the app" choice already made - skip the
+    // marketing landing page and go straight to the boot splash.
+    return Capacitor.isNativePlatform() ? "splash" : "landing";
   });
 
   useEffect(() => {
@@ -231,6 +236,9 @@ export default function App() {
     else voice.stopSpeaking();
   }
 
+  if (phase === "landing") {
+    return <LandingPage onUseWebApp={() => setPhase(isAuthed() ? "app" : "login")} />;
+  }
   if (phase === "splash") {
     return (
       <div className="mx-auto min-h-full w-full max-w-[430px]">

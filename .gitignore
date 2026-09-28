@@ -16,4 +16,7 @@ android/local.properties
 android/.idea
 android/app/release
 *.apk
+# ...except the distributable copy the landing page's download button and QR
+# code point at - this one must reach the repo so Vercel's build has it.
+!public/echopay.apk
 shots

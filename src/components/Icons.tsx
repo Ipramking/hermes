@@ -51,6 +51,8 @@ import {
   SpeakerHigh,
   ShareNetwork,
   DownloadSimple,
+  Monitor,
+  AndroidLogo,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -110,3 +112,6 @@ export const SpeakerIcon: Icon = SpeakerHigh;
 export const ReceiptIcon: Icon = Receipt;
 export const ShareIcon: Icon = ShareNetwork;
 export const DownloadIcon: Icon = DownloadSimple;
+export const QrCodeIcon: Icon = QrCode;
+export const MonitorIcon: Icon = Monitor;
+export const AndroidIcon: Icon = AndroidLogo;

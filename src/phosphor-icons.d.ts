@@ -61,4 +61,6 @@ declare module "@phosphor-icons/react" {
   export const SpeakerHigh: Icon;
   export const ShareNetwork: Icon;
   export const DownloadSimple: Icon;
+  export const Monitor: Icon;
+  export const AndroidLogo: Icon;
 }
