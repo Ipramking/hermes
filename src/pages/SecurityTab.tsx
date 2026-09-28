@@ -1,5 +1,6 @@
 import { naira, type Fingerprint } from "../core/index.js";
 import { PageHeader } from "../components/PageHeader.js";
+import { HeaderMicButton } from "../components/HeaderMicButton.js";
 import { ShieldCheck, Alert, Send } from "../components/Icons.js";
 
 export interface SecurityEvent {
@@ -22,11 +23,17 @@ export function SecurityTab({
   log,
   onTest,
   onBack,
+  micListening,
+  micSupported,
+  onMicToggle,
 }: {
   fingerprint: Fingerprint;
   log: SecurityEvent[];
   onTest: () => void;
   onBack?: () => void;
+  micListening?: boolean;
+  micSupported?: boolean;
+  onMicToggle?: () => void;
 }) {
   const stats = [
     { k: "Usual max send", v: naira(fingerprint.typicalMaxSendKobo) },
@@ -37,7 +44,16 @@ export function SecurityTab({
 
   return (
     <div className="animate-rise pb-12">
-      <PageHeader title="SentryAI" subtitle="Protection tuned to how you bank" onBack={onBack} />
+      <PageHeader
+        title="SentryAI"
+        subtitle="Protection tuned to how you bank"
+        onBack={onBack}
+        action={
+          onMicToggle && (
+            <HeaderMicButton listening={!!micListening} supported={!!micSupported} onToggle={onMicToggle} tone="light" />
+          )
+        }
+      />
 
       {/* status banner */}
       <section className="mt-5 px-5">

@@ -1,6 +1,7 @@
 import type { BehaviourScore, FactorRating } from "../core/index.js";
 import { ScoreRing } from "../components/ScoreRing.js";
 import { PageHeader } from "../components/PageHeader.js";
+import { HeaderMicButton } from "../components/HeaderMicButton.js";
 
 const RATING_TONE: Record<FactorRating, string> = {
   Excellent: "text-positive",
@@ -12,10 +13,31 @@ const RATING_TONE: Record<FactorRating, string> = {
 
 /** The explainability screen. Every factor shows its weight, rating and a
  *  plain-language reason, so the score is legible and defensible. */
-export function ScoreTab({ score, onBack }: { score: BehaviourScore; onBack?: () => void }) {
+export function ScoreTab({
+  score,
+  onBack,
+  micListening,
+  micSupported,
+  onMicToggle,
+}: {
+  score: BehaviourScore;
+  onBack?: () => void;
+  micListening?: boolean;
+  micSupported?: boolean;
+  onMicToggle?: () => void;
+}) {
   return (
     <div className="animate-rise pb-12">
-      <PageHeader title="BehaviourScore" subtitle="Built from how you bank, not from loans" onBack={onBack} />
+      <PageHeader
+        title="BehaviourScore"
+        subtitle="Built from how you bank, not from loans"
+        onBack={onBack}
+        action={
+          onMicToggle && (
+            <HeaderMicButton listening={!!micListening} supported={!!micSupported} onToggle={onMicToggle} tone="light" />
+          )
+        }
+      />
 
       {/* hero ring */}
       <section className="mt-5 px-5">

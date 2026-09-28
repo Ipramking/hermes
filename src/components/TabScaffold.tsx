@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import { amara } from "../core/index.js";
 import { Notif, ShieldCheck } from "./Icons.js";
+import { HeaderMicButton } from "./HeaderMicButton.js";
 
 /**
  * The EchoPay shell chrome: a brand-red header (wordmark, protection status,
- * notifications, profile) with a white content sheet curving up over it and a
- * centred greeting. Every main tab renders inside this so the whole app reads
- * as one EchoPay product.
+ * voice control, notifications, profile) with a white content sheet curving
+ * up over it and a centred greeting. Every main tab renders inside this so
+ * the whole app reads as one EchoPay product.
  */
 export function TabScaffold({
   children,
@@ -14,12 +15,18 @@ export function TabScaffold({
   onNotifications,
   protectedOn = true,
   greeting = true,
+  micListening,
+  micSupported,
+  onMicToggle,
 }: {
   children: ReactNode;
   onProfile?: () => void;
   onNotifications?: () => void;
   protectedOn?: boolean;
   greeting?: boolean;
+  micListening?: boolean;
+  micSupported?: boolean;
+  onMicToggle?: () => void;
 }) {
   const [first, last] = amara.ownerName.split(" ");
   return (
@@ -41,6 +48,14 @@ export function TabScaffold({
               <span className="flex items-center gap-1 rounded-full bg-white/12 px-2.5 py-1 text-[11px] font-bold text-white">
                 <ShieldCheck size={13} weight="fill" className="text-brand-blush" /> Protected
               </span>
+            )}
+            {onMicToggle && (
+              <HeaderMicButton
+                listening={!!micListening}
+                supported={!!micSupported}
+                onToggle={onMicToggle}
+                tone="dark"
+              />
             )}
             <button
               onClick={onNotifications}

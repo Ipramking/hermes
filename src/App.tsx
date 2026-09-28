@@ -14,7 +14,6 @@ import {
   type VoiceCommand,
 } from "./core/index.js";
 import { useVoice } from "./hooks/useVoice.js";
-import { VoiceControl } from "./components/VoiceControl.js";
 import { BottomNav, type TabKey } from "./components/BottomNav.js";
 import { TabScaffold } from "./components/TabScaffold.js";
 import { ComingSoon } from "./components/ComingSoon.js";
@@ -249,20 +248,32 @@ export default function App() {
     );
   }
 
+  const micProps = { micListening: voice.listening, micSupported: voice.commandsSupported, onMicToggle: toggleVoice };
+
   return (
     <div className="ambient relative mx-auto min-h-full w-full max-w-[430px]">
-      {detail === "score" && <ScoreTab score={score} onBack={() => setDetail(null)} />}
+      {detail === "score" && <ScoreTab score={score} onBack={() => setDetail(null)} {...micProps} />}
       {detail === "security" && (
-        <SecurityTab fingerprint={fingerprint} log={log} onTest={() => attempt(fraudTxn)} onBack={() => setDetail(null)} />
+        <SecurityTab
+          fingerprint={fingerprint}
+          log={log}
+          onTest={() => attempt(fraudTxn)}
+          onBack={() => setDetail(null)}
+          {...micProps}
+        />
       )}
-      {detail === "profile" && <ProfileTab score={score} onBack={() => setDetail(null)} />}
+      {detail === "profile" && <ProfileTab score={score} onBack={() => setDetail(null)} {...micProps} />}
 
       {!detail && (
         <>
           <div key={tab} className="pb-28">
             {tab === "home" &&
               (loaded ? (
-                <TabScaffold onProfile={() => setDetail("profile")} onNotifications={() => comingSoon("Notifications", BottomNavBell)}>
+                <TabScaffold
+                  onProfile={() => setDetail("profile")}
+                  onNotifications={() => comingSoon("Notifications", BottomNavBell)}
+                  {...micProps}
+                >
                   <HomeTab
                     score={score}
                     onTransfer={openTransfer}
@@ -275,19 +286,31 @@ export default function App() {
               ))}
 
             {tab === "dashboard" && (
-              <TabScaffold onProfile={() => setDetail("profile")} onNotifications={() => comingSoon("Notifications", BottomNavBell)}>
+              <TabScaffold
+                onProfile={() => setDetail("profile")}
+                onNotifications={() => comingSoon("Notifications", BottomNavBell)}
+                {...micProps}
+              >
                 <DashboardTab score={score} onGoScore={() => setDetail("score")} onComingSoon={comingSoon} />
               </TabScaffold>
             )}
 
             {tab === "transact" && (
-              <TabScaffold onProfile={() => setDetail("profile")} onNotifications={() => comingSoon("Notifications", BottomNavBell)}>
+              <TabScaffold
+                onProfile={() => setDetail("profile")}
+                onNotifications={() => comingSoon("Notifications", BottomNavBell)}
+                {...micProps}
+              >
                 <TransactTab onTransfer={openTransfer} onComingSoon={comingSoon} />
               </TabScaffold>
             )}
 
             {tab === "services" && (
-              <TabScaffold onProfile={() => setDetail("profile")} onNotifications={() => comingSoon("Notifications", BottomNavBell)}>
+              <TabScaffold
+                onProfile={() => setDetail("profile")}
+                onNotifications={() => comingSoon("Notifications", BottomNavBell)}
+                {...micProps}
+              >
                 <ServicesTab
                   onGoScore={() => setDetail("score")}
                   onGoSecurity={() => setDetail("security")}
@@ -301,6 +324,7 @@ export default function App() {
                 onGoScore={() => setDetail("score")}
                 onGoSecurity={() => setDetail("security")}
                 onTransfer={openTransfer}
+                {...micProps}
               />
             )}
           </div>
@@ -369,15 +393,6 @@ export default function App() {
       )}
 
       {soon && <ComingSoon title={soon.title} Icon={soon.Icon} onClose={() => setSoon(null)} />}
-
-      {!transferOpen && !pending && !outcome && !soon && (
-        <VoiceControl
-          listening={voice.listening}
-          supported={voice.commandsSupported}
-          onToggle={toggleVoice}
-          bottomOffset={detail ? 20 : 96}
-        />
-      )}
 
       {toast && (
         <div className="fixed inset-x-0 bottom-24 z-[55] mx-auto w-[92%] max-w-[400px] animate-pop rounded-ctrl bg-brand-red px-4 py-3 text-center text-sm font-semibold text-white shadow-card">

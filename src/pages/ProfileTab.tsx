@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { amara, type BehaviourScore } from "../core/index.js";
 import { PageHeader } from "../components/PageHeader.js";
+import { HeaderMicButton } from "../components/HeaderMicButton.js";
 import { ShieldCheck, Gauge, Cards, ChevronRight, User } from "../components/Icons.js";
 import { applyTheme, getTheme, type Theme } from "../theme.js";
 
@@ -12,7 +13,19 @@ const ROWS = [
 
 const THEMES: Theme[] = ["system", "light", "dark"];
 
-export function ProfileTab({ score, onBack }: { score: BehaviourScore; onBack?: () => void }) {
+export function ProfileTab({
+  score,
+  onBack,
+  micListening,
+  micSupported,
+  onMicToggle,
+}: {
+  score: BehaviourScore;
+  onBack?: () => void;
+  micListening?: boolean;
+  micSupported?: boolean;
+  onMicToggle?: () => void;
+}) {
   const [theme, setTheme] = useState<Theme>(getTheme());
   const opened = new Date(amara.openedAt).toLocaleDateString("en-NG", {
     month: "long",
@@ -25,7 +38,15 @@ export function ProfileTab({ score, onBack }: { score: BehaviourScore; onBack?: 
   }
   return (
     <div className="animate-rise">
-      <PageHeader title="Profile" onBack={onBack} />
+      <PageHeader
+        title="Profile"
+        onBack={onBack}
+        action={
+          onMicToggle && (
+            <HeaderMicButton listening={!!micListening} supported={!!micSupported} onToggle={onMicToggle} tone="light" />
+          )
+        }
+      />
 
       <section className="mt-5 px-5">
         <div className="card flex flex-col items-center p-6 text-center">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Send, Close, Spark } from "../components/Icons.js";
+import { HeaderMicButton } from "../components/HeaderMicButton.js";
 
 interface Msg {
   from: "echo" | "user";
@@ -21,10 +22,16 @@ export function ChatTab({
   onGoScore,
   onGoSecurity,
   onTransfer,
+  micListening,
+  micSupported,
+  onMicToggle,
 }: {
   onGoScore: () => void;
   onGoSecurity: () => void;
   onTransfer: () => void;
+  micListening?: boolean;
+  micSupported?: boolean;
+  onMicToggle?: () => void;
 }) {
   const [msgs, setMsgs] = useState<Msg[]>([GREETING]);
   const [draft, setDraft] = useState("");
@@ -59,9 +66,19 @@ export function ChatTab({
               <p className="text-[11px] text-white/70">Your EchoPay virtual assistant</p>
             </div>
           </div>
-          <span className="rounded-full bg-white/12 px-2.5 py-1 text-[11px] font-semibold text-white">
-            English
-          </span>
+          <div className="flex items-center gap-2">
+            {onMicToggle && (
+              <HeaderMicButton
+                listening={!!micListening}
+                supported={!!micSupported}
+                onToggle={onMicToggle}
+                tone="dark"
+              />
+            )}
+            <span className="rounded-full bg-white/12 px-2.5 py-1 text-[11px] font-semibold text-white">
+              English
+            </span>
+          </div>
         </div>
       </div>
 
